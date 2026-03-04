@@ -26,7 +26,20 @@ Works everywhere on YouTube — homepage feed, watch page, search results, chann
 
 ## Setup
 
-### 1. Get a Free YouTube API Key
+# Clone the Repository
+
+1. **Clone the Repo:**
+```bash
+git clone https://github.com/Ankitsgit/PeekTube.git
+```
+
+2. **Navigate into the directory:**
+```bash
+cd PeekTube
+```
+
+
+### 3. Get a Free YouTube API Key
 
 1. Go to [console.developers.google.com](https://console.developers.google.com)
 2. Create a project → **Enable** `YouTube Data API v3`
@@ -48,7 +61,7 @@ With your actual key:
 var YOUTUBE_API_KEY = "AIzaSyABC123...";
 ```
 
-### 3. Load in Chrome
+### 4. Load in Chrome
 
 1. Open `chrome://extensions`
 2. Enable **Developer Mode** (top-right toggle)
