@@ -2,49 +2,337 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PeekTube</title>
 <style>
-  body { width:280px; background:#0f0f0f; color:#fff; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; padding:18px; margin:0; }
-  .logo { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
-  .logo-icon { width:32px; height:32px; background:#ff0000; border-radius:8px; display:flex; align-items:center; justify-content:center; }
-  .logo-title { font-size:14px; font-weight:700; }
-  .logo-sub   { font-size:11px; color:#777; margin-top:1px; }
-  .box { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:10px; padding:12px 14px; margin-bottom:14px; }
-  .row { display:flex; justify-content:space-between; align-items:center; }
-  .badge { font-size:11px; font-weight:600; padding:3px 8px; border-radius:20px; background:#1a3a1a; color:#4ade80; border:1px solid rgba(74,222,128,0.2); }
-  .label { font-size:12px; color:#aaa; }
-  h3 { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.07em; color:#666; margin:0 0 8px; }
-  code { font-family:monospace; font-size:11px; color:#f472b6; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.09); border-radius:5px; padding:7px 10px; display:block; word-break:break-all; line-height:1.5; margin-bottom:10px; }
-  a { color:#ff0000; font-size:12px; font-weight:500; }
-  p { font-size:12px; color:#aaa; line-height:1.6; margin:0; }
-  .tip { background:rgba(255,200,0,0.06); border:1px solid rgba(255,200,0,0.15); border-radius:8px; padding:10px 12px; font-size:12px; color:#fbbf24; line-height:1.5; margin-top:12px; }
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --red: #ff2d2d;
+    --red-dim: rgba(255,45,45,0.1);
+    --red-border: rgba(255,45,45,0.22);
+    --green: #22c55e;
+    --green-dim: rgba(34,197,94,0.1);
+    --green-border: rgba(34,197,94,0.2);
+    --surface: #111;
+    --s2: #191919;
+    --s3: #222;
+    --border: rgba(255,255,255,0.07);
+    --border-hi: rgba(255,255,255,0.12);
+    --text: #f0f0f0;
+    --text2: #888;
+    --text3: #444;
+    --mono: 'DM Mono', 'Courier New', monospace;
+    --sans: 'Instrument Sans', -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    width: 292px;
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Top red line */
+  .top-bar {
+    height: 2px;
+    background: linear-gradient(90deg, var(--red) 0%, rgba(255,45,45,0.2) 70%, transparent 100%);
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 13px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .brand { display: flex; align-items: center; gap: 9px; }
+
+  .icon-wrap {
+    width: 28px; height: 28px;
+    background: var(--red);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 14px rgba(255,45,45,0.4);
+    flex-shrink: 0;
+  }
+
+  .brand-name { font-size: 14px; font-weight: 700; letter-spacing: -0.02em; }
+  .brand-name b { color: var(--red); font-weight: 700; }
+
+  .pill {
+    display: flex; align-items: center; gap: 5px;
+    font-family: var(--mono); font-size: 9px; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--green);
+    background: var(--green-dim);
+    border: 1px solid var(--green-border);
+    border-radius: 20px;
+    padding: 3px 8px 3px 6px;
+  }
+
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--green); box-shadow: 0 0 5px var(--green);
+    animation: blink 2.2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ── BODY ── */
+  .body { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+
+  /* metric chips */
+  .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+
+  .chip {
+    background: var(--s2); border: 1px solid var(--border);
+    border-radius: 9px; padding: 9px 11px;
+    position: relative; overflow: hidden;
+  }
+  .chip::after {
+    content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background: linear-gradient(90deg,transparent,var(--border-hi),transparent);
+  }
+  .chip-val { font-size: 13px; font-weight: 700; letter-spacing:-0.02em; color: var(--text); }
+  .chip-key {
+    font-family: var(--mono); font-size: 9px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text3); margin-top: 2px;
+  }
+
+  /* card sections */
+  .card {
+    background: var(--s2); border: 1px solid var(--border);
+    border-radius: 11px; overflow: hidden;
+  }
+
+  .card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 13px; border-bottom: 1px solid var(--border);
+  }
+
+  .card-title {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 600; color: var(--text);
+  }
+  .card-title svg { color: var(--red); }
+
+  .badge-req {
+    font-family: var(--mono); font-size: 9px; text-transform: uppercase;
+    letter-spacing: 0.05em; font-weight: 500;
+    color: var(--red); background: var(--red-dim);
+    border: 1px solid var(--red-border); border-radius: 4px; padding: 2px 6px;
+  }
+
+  .card-body { padding: 12px 13px; }
+
+  .desc {
+    font-size: 11px; color: var(--text2); line-height: 1.65; margin-bottom: 10px;
+  }
+  .desc code {
+    font-family: var(--mono); font-size: 10px; color: #f9a8d4;
+    background: rgba(249,168,212,0.1); border: 1px solid rgba(249,168,212,0.18);
+    border-radius: 3px; padding: 1px 5px;
+  }
+
+  .codeblock {
+    background: #0a0a0a; border: 1px solid var(--border);
+    border-radius: 7px; padding: 9px 12px; margin-bottom: 10px;
+    position: relative; overflow: hidden;
+  }
+  .codeblock::before {
+    content:''; position:absolute; left:0; top:0; bottom:0;
+    width:2px; background:var(--red); opacity:0.5;
+  }
+  .codeblock pre {
+    font-family: var(--mono); font-size: 10px;
+    line-height: 1.65; white-space: pre-wrap; word-break: break-all;
+  }
+  .kw  { color: #f9a8d4; }
+  .str { color: #86efac; }
+  .cm  { color: #3d3d3d; }
+
+  .link {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600; color: var(--red);
+    text-decoration: none; transition: opacity 150ms;
+  }
+  .link:hover { opacity: 0.7; }
+
+  /* steps */
+  .steps { padding: 9px 13px 12px; display: flex; flex-direction: column; gap: 0; }
+
+  .step {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 7px 0;
+  }
+  .step + .step { border-top: 1px solid rgba(255,255,255,0.04); }
+
+  .step-n {
+    width: 17px; height: 17px; border-radius: 5px; flex-shrink: 0;
+    background: var(--s3); border: 1px solid var(--border-hi);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 9px; color: var(--text2);
+    margin-top: 1px;
+  }
+  .step-t { font-size: 11px; color: var(--text2); line-height: 1.55; }
+  .step-t strong { color: var(--text); font-weight: 600; }
+
+  /* quota */
+  .quota {
+    display: flex; align-items: flex-start; gap: 8px;
+    background: rgba(251,191,36,0.05);
+    border: 1px solid rgba(251,191,36,0.12);
+    border-radius: 9px; padding: 9px 11px;
+  }
+  .quota-ico { font-size: 12px; flex-shrink: 0; margin-top: 1px; }
+  .quota-t {
+    font-family: var(--mono); font-size: 10px;
+    color: #92783a; line-height: 1.6;
+  }
+  .quota-t strong { color: #fbbf24; font-weight: 500; }
+
+  /* ── FOOTER ── */
+  .footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 16px 12px;
+    border-top: 1px solid var(--border);
+  }
+  .ver { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: 0.05em; }
+  .foot-links { display: flex; gap: 12px; }
+  .foot-link {
+    font-family: var(--mono); font-size: 9px; color: var(--text3);
+    text-decoration: none; transition: color 150ms; letter-spacing: 0.03em;
+  }
+  .foot-link:hover { color: var(--text2); }
+
+  /* entrance animations */
+  .header, .chips, .card, .quota, .footer {
+    animation: up 280ms ease both;
+  }
+  .chips     { animation-delay: 30ms; }
+  .card:nth-child(3) { animation-delay: 60ms; }
+  .card:nth-child(4) { animation-delay: 90ms; }
+  .quota     { animation-delay: 120ms; }
+  .footer    { animation-delay: 150ms; }
+
+  @keyframes up {
+    from { opacity:0; transform:translateY(5px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
 </style>
 </head>
 <body>
-<div class="logo">
-  <div class="logo-icon">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><path d="M6.5 11.5l5-3.5-5-3.5v7z"/></svg>
+
+<div class="top-bar"></div>
+
+<div class="header">
+  <div class="brand">
+    <div class="icon-wrap">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="white">
+        <path d="M6.5 11.5l5-3.5-5-3.5v7z"/>
+      </svg>
+    </div>
+    <div class="brand-name">Peek<b>Tube</b></div>
   </div>
-  <div>
-    <div class="logo-title">Channel Preview</div>
-    <div class="logo-sub">YouTube Hover Cards</div>
+  <div class="pill">
+    <div class="dot"></div>
+    Active
   </div>
 </div>
 
-<div class="box">
-  <div class="row">
-    <span class="label">Status</span>
-    <span class="badge">● Active</span>
+<div class="body">
+
+  <div class="chips">
+    <div class="chip">
+      <div class="chip-val">300ms</div>
+      <div class="chip-key">Hover delay</div>
+    </div>
+    <div class="chip">
+      <div class="chip-val">10 min</div>
+      <div class="chip-key">Cache TTL</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+          <rect x="2" y="7" width="12" height="8" rx="1.5"/>
+          <path d="M5 7V5a3 3 0 0 1 6 0v2"/>
+          <circle cx="8" cy="11" r="0.8" fill="currentColor" stroke="none"/>
+        </svg>
+        API Key
+      </div>
+      <span class="badge-req">Required</span>
+    </div>
+    <div class="card-body">
+      <p class="desc">Open <code>background.js</code> and update line&nbsp;7:</p>
+      <div class="codeblock">
+        <pre><span class="kw">var</span> YOUTUBE_API_KEY =
+  <span class="str">"YOUR_KEY_HERE"</span>; <span class="cm">// ← your key</span></pre>
+      </div>
+      <a class="link" href="https://console.developers.google.com/" target="_blank">
+        <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9"/>
+          <path d="M10 2h4v4M14 2 8 8"/>
+        </svg>
+        Get free API key
+      </a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+          <circle cx="8" cy="8" r="6"/>
+          <path d="M8 7v4M8 5.2v.6"/>
+        </svg>
+        How to use
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-t">Add your API key to <strong>background.js</strong></div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-t">Open <strong>YouTube</strong> and browse normally</div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div class="step-t"><strong>Hover</strong> any channel name or avatar for 300ms</div>
+      </div>
+      <div class="step">
+        <div class="step-n">4</div>
+        <div class="step-t">Profile card appears with <strong>live channel stats</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quota">
+    <div class="quota-ico">⚡</div>
+    <div class="quota-t">
+      <strong>10,000 free units/day.</strong> Each channel fetch uses ~3 units.
+      Results are cached — repeat hovers are free.
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span class="ver">v1.1.0 · PeekTube</span>
+  <div class="foot-links">
+    <a class="foot-link" href="https://console.developers.google.com/" target="_blank">API Console</a>
+    <a class="foot-link" href="https://developers.google.com/youtube/v3" target="_blank">YT Docs</a>
   </div>
 </div>
 
-<h3>Setup — Add Your API Key</h3>
-<p>Open <code style="display:inline;padding:2px 5px">background.js</code> and replace line 7:</p>
-<code>var YOUTUBE_API_KEY = "YOUR_KEY_HERE";</code>
-<a href="https://console.developers.google.com/" target="_blank">Get a free API key →</a>
-
-<div class="tip">
-  <strong style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">How to use</strong>
-  Hover over any YouTube channel name or avatar for 300ms to see the preview card.
-</div>
 </body>
 </html>

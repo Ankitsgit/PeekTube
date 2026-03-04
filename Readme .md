@@ -7,9 +7,7 @@
 ## Demo
 
 <div align="center">
-
-![UstaadX Demo GIF](Demo.gif)
-
+  <img src="Demo.gif" width="100%" />
 </div>
 
 ## What It Does
